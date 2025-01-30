@@ -57,6 +57,102 @@ const data: Raker[] = [
     deadline: new Date("2025-02-05"),
     realisasi: null
   },
+  {
+    id: "728ed52f",
+    name: "PM LINK",
+    tipe: "LINK",
+    status: "Sudah",
+    deadline: new Date("2025-02-05"),
+    realisasi: new Date("2025-02-01"),
+  },
+  {
+    id: "489e1d42",
+    name: "PM POP",
+    tipe: "POP",
+    status: "Belum",
+    deadline: new Date("2025-02-05"),
+    realisasi: null
+  },
+  {
+    id: "728ed52f",
+    name: "PM LINK",
+    tipe: "LINK",
+    status: "Sudah",
+    deadline: new Date("2025-02-05"),
+    realisasi: new Date("2025-02-01"),
+  },
+  {
+    id: "489e1d42",
+    name: "PM POP",
+    tipe: "POP",
+    status: "Belum",
+    deadline: new Date("2025-02-05"),
+    realisasi: null
+  },
+  {
+    id: "728ed52f",
+    name: "PM LINK",
+    tipe: "LINK",
+    status: "Sudah",
+    deadline: new Date("2025-02-05"),
+    realisasi: new Date("2025-02-01"),
+  },
+  {
+    id: "489e1d42",
+    name: "PM POP",
+    tipe: "POP",
+    status: "Belum",
+    deadline: new Date("2025-02-05"),
+    realisasi: null
+  },
+  {
+    id: "728ed52f",
+    name: "PM LINK",
+    tipe: "LINK",
+    status: "Sudah",
+    deadline: new Date("2025-02-05"),
+    realisasi: new Date("2025-02-01"),
+  },
+  {
+    id: "489e1d42",
+    name: "PM POP",
+    tipe: "POP",
+    status: "Belum",
+    deadline: new Date("2025-02-05"),
+    realisasi: null
+  },
+  {
+    id: "728ed52f",
+    name: "PM LINK",
+    tipe: "LINK",
+    status: "Sudah",
+    deadline: new Date("2025-02-05"),
+    realisasi: new Date("2025-02-01"),
+  },
+  {
+    id: "489e1d42",
+    name: "PM POP",
+    tipe: "POP",
+    status: "Belum",
+    deadline: new Date("2025-02-05"),
+    realisasi: null
+  },
+  {
+    id: "728ed52f",
+    name: "PM LINK",
+    tipe: "LINK",
+    status: "Sudah",
+    deadline: new Date("2025-02-05"),
+    realisasi: new Date("2025-02-01"),
+  },
+  {
+    id: "489e1d42",
+    name: "PM POP",
+    tipe: "POP",
+    status: "Belum",
+    deadline: new Date("2025-02-05"),
+    realisasi: null
+  },
   // ...
 ]
 
@@ -172,6 +268,11 @@ export default function Page() {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 5
+      }
+    }
   })
 
   return (

@@ -12,8 +12,8 @@ export const login = axios.create({
   headers: {'Content-Type' : 'application/json'}
 });
 
-export const dataDashboard = axios.create({
-  baseURL: 'http://localhost:4000/auth/login', // Backend API URL
+export const dataRaker = axios.create({
+  baseURL: 'http://localhost:4000/data/raker', // Backend API URL
   timeout: 10000,
   headers: {'Content-Type' : 'application/json'}
 });
