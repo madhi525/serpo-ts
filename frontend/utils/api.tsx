@@ -12,8 +12,7 @@ export const login = axios.create({
   headers: {'Content-Type' : 'application/json'}
 });
 
-export const dataRaker = axios.create({
-  baseURL: 'http://localhost:4000/data/raker', // Backend API URL
-  timeout: 10000,
+export const getDataPmLink = axios.create({
+  baseURL: 'http://localhost:4000/data/getallpmlink', // Backend API URL
   headers: {'Content-Type' : 'application/json'}
 });

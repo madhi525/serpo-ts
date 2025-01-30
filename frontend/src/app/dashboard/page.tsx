@@ -270,7 +270,7 @@ export default function Page() {
     },
     initialState: {
       pagination: {
-        pageSize: 5
+        pageSize: 5 //mengatur berapa baris yang di show oleh data
       }
     }
   })

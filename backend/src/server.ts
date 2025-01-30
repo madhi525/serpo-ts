@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
+import dataRoutes from './routes/dataRoutes';
 
 
 dotenv.config();
@@ -21,6 +22,7 @@ mongoose
 .catch(err => console.error('MongoDB connection failed:', err));
 
 app.use('/auth', authRoutes);
+app.use('/data', dataRoutes);
 
 app.get('/', (req, res) => {
     res.send('Respond from backend');

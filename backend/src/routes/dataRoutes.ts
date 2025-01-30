@@ -1,18 +1,27 @@
 import { Request, Response, NextFunction } from 'express';
 
-// Helper function to handle async routes
-const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
+const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<Response | void>) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    fn(req, res, next).catch(next); // Pass errors to Express error handler
+    fn(req, res, next).catch(next);
   };
 };
 
+
 // Use asyncHandler in authRoutes
 import express from 'express';
-import { login, register } from '../../controllers/authControllers';
+import { 
+  createPmLink,
+  getAllPmLinks,
+  getPmLinkById,
+  updatePmLink,
+  deletePmLink
+} from '../../controllers/dataControllers'
 const router = express.Router();
 
-router.post('/login', asyncHandler(login));
-router.post('/register', asyncHandler(register));
+router.post('/createpmlink', asyncHandler(createPmLink));
+router.get('/getallpmlink', asyncHandler(getAllPmLinks));
+router.get('/getpmlinkbyid/:id', asyncHandler(getPmLinkById));
+router.put('/updatepmlink/:id', asyncHandler(updatePmLink));
+router.delete('/deletepmlink/:id', asyncHandler(deletePmLink));
 
 export default router;

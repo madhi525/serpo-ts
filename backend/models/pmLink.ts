@@ -5,6 +5,10 @@ const pmlinkSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    serpo: {
+        type: String,
+        required: true
+    },
     segment: { 
         type: String, 
         required: true
