@@ -10,4 +10,4 @@ const Fleet = () => {
     );
   }
 
-export default verifikasiToken(Fleet, ['fleet']);
+export default verifikasiToken(Fleet, ['serpo']);

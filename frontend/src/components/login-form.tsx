@@ -25,17 +25,29 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('role', JSON.stringify(response.data.role));
       // const role = response.data.role;
-      router.push('/dashboard');
+      if (response.data.role !== 'serpo') {
+        router.push('/dashboard/admin');
+      } else {
+        router.push('/dashboard/serpo');
+      }
       // alert('Login successful!');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Something went wrong');
       console.log(error);
+      alert(err.response?.data?.message);
+
+      const usernameInput = document.getElementById('username') as HTMLInputElement;
+      const passwordInput = document.getElementById('password') as HTMLInputElement;
+      usernameInput.classList.add('border-red-400');
+      passwordInput.classList.add('border-red-400');
     }
   };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form onSubmit={handleLogin}>
+      <form 
+        onSubmit={handleLogin}
+        id="form-login">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
             <a
@@ -62,7 +74,7 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+              <Label htmlFor="password" >Password</Label>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
               <Input
                 id="password"
                 type="password"
@@ -78,6 +90,10 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
             >
               Login
             </Button>
+            {error? 
+            <span className="text-red-400"> username atau password salah </span>
+            : ""
+            }
           </div>
         </div>
       </form>

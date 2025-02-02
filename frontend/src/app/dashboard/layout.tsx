@@ -30,40 +30,30 @@ import { useState } from "react"
 //   subsets: ["latin"],
 // });
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
-  const [activeItem, setActiveItem] = useState<string | null>(null);
+  const [activeItem, setActiveItem] = useState<string | "Home">("Home");
   const handleItemChange = (item:string | null) =>{
     setActiveItem(item);
     console.log("Active item in parent:", item);
-  }
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = "/";
   }
   return (
         <SidebarProvider>
           <AppSidebar onActiveItemChange={handleItemChange}/>
           <SidebarInset>
-            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 justify-between">
-              <div className="flex flex-row items-center gap-2 ">
-                <SidebarTrigger className="-ml-1" />
-                <Separator orientation="vertical" className="mr-2 h-4" />
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="#">
-                        {activeItem}
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-              </div>
-              <Button 
-                variant={'destructive'}
-                className="shadow-sm font-bold"
-                onClick={handleLogout}>
-                Logout
-              </Button>
-            </header>
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 justify-between sticky top-0 w-full bg-white z-10">
+            <div className="flex flex-row items-center gap-2">
+              <SidebarTrigger className="-ml-1" />
+              <Separator orientation="vertical" className="mr-2 h-4" />
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem className="hidden md:block">
+                    <BreadcrumbLink href="#">
+                      {activeItem}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </div>
+          </header>
           {children}
           </SidebarInset>
         </SidebarProvider>
