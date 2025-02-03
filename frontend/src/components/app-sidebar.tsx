@@ -31,7 +31,7 @@ export function AppSidebar({ onActiveItemChange, ...props }) {
   const dataMenu = {
     adminMenu: [
       {
-        title: "dashboard",
+        title: "Dashboard",
         url: "#",
         items: [
           { title: "Home", url: `/dashboard/${role}` },
@@ -50,7 +50,7 @@ export function AppSidebar({ onActiveItemChange, ...props }) {
     ],
     serpoMenu: [
       {
-        title: "dashboard",
+        title: "Dashboard",
         url: "#",
         items: [
           { title: "Home", url: `/dashboard/${role}` },
@@ -71,19 +71,20 @@ export function AppSidebar({ onActiveItemChange, ...props }) {
   };
 
 
-  const renderMenu = (menuData) => (
+  const renderMenu = (menuData: any) => (
     <>
-      {menuData.map((item) => (
+      {menuData.map((item: any) => (
         <SidebarGroup key={item.title}>
           <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {item.items.map((subItem) => (
+              {item.items.map((subItem: any) => (
                 <SidebarMenuItem key={subItem.title}>
                   <SidebarMenuButton
                     asChild
                     onClick={() => handleClick(subItem.title)}
                     isActive={isActiveValue === subItem.title}
+                    variant={isActiveValue === subItem.title ? "outline" : "default"}
                   >
                     <Link href={subItem.url}>{subItem.title}</Link>
                   </SidebarMenuButton>

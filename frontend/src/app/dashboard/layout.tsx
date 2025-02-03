@@ -1,8 +1,8 @@
 
 "use client"
 
-// import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
+import { ModeToggle } from "@/components/ModeToggle";
 import { AppSidebar } from "@/components/app-sidebar"
 import {
   Breadcrumb,
@@ -10,7 +10,6 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
 } from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
@@ -39,7 +38,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
         <SidebarProvider>
           <AppSidebar onActiveItemChange={handleItemChange}/>
           <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 justify-between sticky top-0 w-full bg-white z-10">
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 justify-between sticky top-0 w-full z-10">
             <div className="flex flex-row items-center gap-2">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
@@ -53,6 +52,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
                 </BreadcrumbList>
               </Breadcrumb>
             </div>
+            <ModeToggle />
           </header>
           {children}
           </SidebarInset>
