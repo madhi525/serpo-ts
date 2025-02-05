@@ -21,8 +21,6 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
     console.log('login button clicked');
     try {
       const response = await login.post('',{ username, password });
-      // console.log('response :',response.data);
-      localStorage.setItem('token', response.data.token);
       localStorage.setItem('role', JSON.stringify(response.data.role));
       // const role = response.data.role;
       if (response.data.role !== 'serpo') {

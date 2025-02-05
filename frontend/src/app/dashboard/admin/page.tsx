@@ -1,6 +1,5 @@
 "use client"
 
-import { verifikasiToken } from "../../../../utils/verifikasiToken";
 // import Tabelpmlink from "@/components/tabel-pmlink";
 // import { PmLinkProvider } from "@/context/pmlink-context";
 const Admin = () => {
@@ -28,4 +27,4 @@ const Admin = () => {
     );
   }
 
-export default verifikasiToken(Admin, ['admin']);
+export default (Admin);

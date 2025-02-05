@@ -39,10 +39,10 @@ export default function Tabelpmlink() {
   const [rowSelection, setRowSelection] = useState({})
   // const [data, setData] = useState<pmLink[]>([])
   // const [loading, setLoading] = useState(true)
-  const [role, setRole] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>("");
   const [wilayahFilter, setWilayahFilter] = useState<string | null>(null);
   const [serpoFilter, setSerpoFilter] = useState<string | null>(null);
-  const {dataPm, loading} = usePmLink();
+  const {dataPmLink , loading} = usePmLink();
 
   const router = useRouter();
 
@@ -56,23 +56,39 @@ export default function Tabelpmlink() {
   }, [router]);
 
   
-  type pmLink = {
-    serpo: string
-    wilayah: string
-    segment: string
-    tanggalpm : string
-    traveltiket: number
-    jarak: number
-  }
+// Di atas komponen
+type PmLink = {
+  serpo: string;
+  wilayah: string;
+  segment: string;
+  tanggalpm: string;
+  traveltiket: number;
+  jarak: number;
+};
 
-  const getStruktur = (role: string | null): ColumnDef<pmLink>[] => {
-    const struktur: ColumnDef<pmLink>[] = [
+const isPmLink = (data: any): data is PmLink => {
+  return (
+    typeof data === 'object' &&
+    'serpo' in data &&
+    'wilayah' in data &&
+    'segment' in data &&
+    'tanggalpm' in data &&
+    'traveltiket' in data &&
+    'jarak' in data
+  );
+};
+
+  const getStruktur = (role: string | null): ColumnDef<PmLink>[] => {
+    // if (!dataPmLink || dataPmLink.length === 0){
+    //   console.warn("data kosong - struktur kolom mungkin tidak sesuai");
+    // }
+    const struktur: ColumnDef<PmLink>[] = [
         {
             id: "select",
             header:({table}) =>(
               <Checkbox
                 checked = { table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-                onCheckedChange={(value:any) => table.toggleAllPageRowsSelected(!!value)}
+                onCheckedChange={(value:boolean) => table.toggleAllPageRowsSelected(!!value)}
                 aria-label="Select all"/>
             ),
             cell: ({row}) => (
@@ -167,7 +183,7 @@ export default function Tabelpmlink() {
   
 
   const table = useReactTable({
-    data: dataPm,
+    data: dataPmLink,
     columns: struktur,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -203,6 +219,24 @@ export default function Tabelpmlink() {
     table.setColumnFilters(filters);
 }, [wilayahFilter, serpoFilter, table]);
 
+  if (loading) {
+    return (
+      <div className="w-full p-2 col-span-2">
+        <div className="rounded-md border p-4">
+          <div className="animate-pulse flex space-x-4">
+            <div className="flex-1 space-y-4 py-1">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full p-2 col-span-2">
       <div className="rounded-md border">
@@ -217,7 +251,7 @@ export default function Tabelpmlink() {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={() => setWilayahFilter(null)}>Semua</DropdownMenuItem>
-              {Array.from(new Set(dataPm.map((item) => item.wilayah))).map((wilayah) => (
+              {Array.from(new Set(dataPmLink.map((item) => item.wilayah))).map((wilayah) => (
                 <DropdownMenuItem key={wilayah} onClick={() => setWilayahFilter(wilayah)}>
                   {wilayah}
                 </DropdownMenuItem>
@@ -234,7 +268,7 @@ export default function Tabelpmlink() {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={() => setSerpoFilter(null)}>Semua</DropdownMenuItem>
-              {Array.from(new Set(dataPm.map((item) => item.serpo))).map((serpo) => (
+              {Array.from(new Set(dataPmLink.map((item) => item.serpo))).map((serpo) => (
                 <DropdownMenuItem key={serpo} onClick={() => setSerpoFilter(serpo)}>
                   {serpo}
                 </DropdownMenuItem>
@@ -263,8 +297,10 @@ export default function Tabelpmlink() {
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
+              table.getRowModel().rows.map((row) => {
+                // console.log("data per row: ", row.original);
+                return(
+                  <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
@@ -277,7 +313,8 @@ export default function Tabelpmlink() {
                     </TableCell>
                   ))}
                 </TableRow>
-              ))
+                )
+              })
             ) : (
               <TableRow>
                 <TableCell
