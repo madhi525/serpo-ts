@@ -7,6 +7,26 @@ const apiData = axios.create({
   withCredentials: true,
 })
 
+export const getDataRaker = async () => {
+  try {
+    const response = await apiData.get('/raker');
+    return response.data;
+    } catch (error) {
+      console.error("gagal mengambil data raker karna : ", error);
+      throw error;
+  }
+}
+
+export const addRaker = async (rakerData) => {
+  try {
+    const response = await apiData.post('/raker', rakerData);
+    return response.data;
+  } catch (error) {
+    console.error("gagal menambahkan data raker karna : ", error);
+    throw error;
+  }
+}
+
 export const getDataPmLink = async () => {
   try {
     const response = await apiData.get('/getallpmlink');

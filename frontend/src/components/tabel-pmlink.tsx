@@ -242,39 +242,42 @@ const isPmLink = (data: any): data is PmLink => {
       <div className="rounded-md border">
         <h1 className="text-center uppercase font-bold mt-2">tabel pm link</h1>
         <div className="flex space-x-4 mb-4 ml-4">
-          {/* Filter Wilayah */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                {wilayahFilter ? `Wilayah: ${wilayahFilter}` : "Filter Wilayah"}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setWilayahFilter(null)}>Semua</DropdownMenuItem>
-              {Array.from(new Set(dataPmLink.map((item) => item.wilayah))).map((wilayah) => (
-                <DropdownMenuItem key={wilayah} onClick={() => setWilayahFilter(wilayah)}>
-                  {wilayah}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Filter Serpo */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                {serpoFilter ? `Serpo: ${serpoFilter}` : "Filter Serpo"}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setSerpoFilter(null)}>Semua</DropdownMenuItem>
-              {Array.from(new Set(dataPmLink.map((item) => item.serpo))).map((serpo) => (
-                <DropdownMenuItem key={serpo} onClick={() => setSerpoFilter(serpo)}>
-                  {serpo}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {
+            role !== 'serpo' ? (
+              <div>
+                <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    {wilayahFilter ? `Wilayah: ${wilayahFilter}` : "Filter Wilayah"}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => setWilayahFilter(null)}>Semua</DropdownMenuItem>
+                  {Array.from(new Set(dataPmLink.map((item) => item.wilayah))).map((wilayah) => (
+                    <DropdownMenuItem key={wilayah} onClick={() => setWilayahFilter(wilayah)}>
+                      {wilayah}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    {serpoFilter ? `Serpo: ${serpoFilter}` : "Filter Serpo"}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => setSerpoFilter(null)}>Semua</DropdownMenuItem>
+                  {Array.from(new Set(dataPmLink.map((item) => item.serpo))).map((serpo) => (
+                    <DropdownMenuItem key={serpo} onClick={() => setSerpoFilter(serpo)}>
+                      {serpo}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              </div>
+             ) : ""
+            }
         </div>        
         <Table>
           <TableHeader>

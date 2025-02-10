@@ -17,11 +17,11 @@ const Admin = () => {
         <div className="p-4 rounded-md shadow-md text-center content-center">
           <span>Status upload BOQ</span>
         </div>
-        <div className="p-4 col-span-2 rounded-md shadow-md text-center content-center">
-          <span>raker</span>
+        <div className="p-4 col-span-3 rounded-md shadow-md text-center content-center">
+          <span>Nodin</span>
         </div>
-        <div className="p-4 rounded-md shadow-md text-center content-center">
-          <span>NOdin</span>
+        <div className="p-4 col-span-4 rounded-md shadow-md text-center content-center">
+          <span>RAKER</span>
         </div>
       </div>
     );
