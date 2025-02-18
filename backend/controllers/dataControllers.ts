@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import PmLink from '../models/pmLink';
+import PmLink from '../models/pm';
 
 // Create New PM Link
 export const createPmLink = async (req: Request, res: Response) => {
