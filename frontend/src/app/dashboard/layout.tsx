@@ -38,7 +38,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
         <SidebarProvider>
           <AppSidebar onActiveItemChange={handleItemChange}/>
           <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 justify-between sticky top-0 w-full z-10">
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 justify-between sticky top-0 w-full z-10 bg-white">
             <div className="flex flex-row items-center gap-2">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />

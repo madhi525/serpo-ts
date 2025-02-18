@@ -1,13 +1,14 @@
 "use client"
 
-import { verifikasiToken } from "../../../../utils/verifikasiToken";
+// import { verifikasiToken } from "../../../../utils/verifikasiToken";
+import TablePencapaianPm from "@/components/tables/table-pencapaian-pm";
 
 const Fleet = () => {
     return (
       <div>
-        <p>fleet</p>
+        <TablePencapaianPm />
       </div>
     );
   }
 
-export default verifikasiToken(Fleet, ['serpo']);
+export default (Fleet);
