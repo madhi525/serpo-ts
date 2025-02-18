@@ -244,8 +244,6 @@ const reportSchema = new mongoose.Schema({
         seting_suhu: Number,
         keterangan: String
     }]
-
-    
 })
 
 // const pmpopSchema = new mongoose.Schema({
