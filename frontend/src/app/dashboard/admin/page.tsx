@@ -12,15 +12,15 @@ const Admin = () => {
         <div className="col-span-2 p-4 rounded-md shadow-md text-center content-center">
           <span>WIN LOSE MTTR</span>
         </div>
-        <div className="col-span-2 p-4 rounded-md shadow-md text-center content-center">
+        <div className="col-span-2 px-4 rounded-md shadow-md text-center content-center border row-span-2">
           <TablePencapaianPm />
         </div>
-        <div className="p-4 rounded-md shadow-md text-center content-center">
+        <div className="col-span-2 p-4 rounded-md shadow-md text-center content-center">
           <span>Status upload BOQ</span>
         </div>
-        <div className="p-4 col-span-3 rounded-md shadow-md text-center content-center">
+        {/* <div className="p-4 col-span-3 rounded-md shadow-md text-center content-center">
           <span>Nodin</span>
-        </div>
+        </div> */}
         <div className="p-4 col-span-4 rounded-md shadow-md text-center content-center">
           <span>RAKER</span>
         </div>

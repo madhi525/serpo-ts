@@ -17,7 +17,17 @@ export const getDataRaker = async () => {
   }
 }
 
-export const addRaker = async (rakerData) => {
+export const getDataPencapaianPm = async () => {
+  try {
+    const response = await apiData.get('/getPencapaianPm');
+    return response.data;
+  } catch (e){
+    console.error('Error fetching PM Link: ', e);
+    throw e;
+  }
+}
+
+export const addRaker = async (rakerData: unknown) => {
   try {
     const response = await apiData.post('/raker', rakerData);
     return response.data;

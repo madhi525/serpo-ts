@@ -9,6 +9,10 @@ import { useState } from "react"
 import {login} from "../../utils/api"
 import { useRouter } from "next/navigation"
 
+interface ApiError {
+  message: string;
+}
+
 export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"div">) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -20,20 +24,23 @@ export function LoginForm({className,...props}: React.ComponentPropsWithoutRef<"
     event.preventDefault();
     console.log('login button clicked');
     try {
-      const response = await login.post('',{ username, password });
+      const response = await login.post('', { username, password });
       localStorage.setItem('role', JSON.stringify(response.data.role));
-      // const role = response.data.role;
+      localStorage.setItem('personel', JSON.stringify(response.data.personel));
+  
       if (response.data.role !== 'serpo') {
         router.push('/dashboard/admin');
       } else {
         router.push('/dashboard/serpo');
       }
-      // alert('Login successful!');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Something went wrong');
+    } catch (err) {
+      // Check if the error is an instance of AxiosError
+      const error = err as { response?: { data?: ApiError } };
+  
+      setError(error.response?.data?.message || 'Something went wrong');
       console.log(error);
-      alert(err.response?.data?.message);
-
+      alert(error.response?.data?.message);
+  
       const usernameInput = document.getElementById('username') as HTMLInputElement;
       const passwordInput = document.getElementById('password') as HTMLInputElement;
       usernameInput.classList.add('border-red-400');

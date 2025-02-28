@@ -10,6 +10,28 @@ const UserSchema = new mongoose.Schema(
       enum: ['admin', 'serpo', 'koordinator', 'icon'], 
       required: true 
     },
+    personel: {
+      type: String,
+      enum: [
+        "SERPO ARGAMAKMUR",
+        "SERPO MANNA",
+        "SERPO MUKO",
+        "SERPO PEKALONGAN",
+        "SERPO SUKAMERINDU",
+        "SERPO DEMANG",
+        "SERPO JAKABARING",
+        "SERPO MASKAREBET",
+        "SERPO PALEMBANGKOTA",
+        "SERPO PALEMBANGULU",
+        "SERPO SUNGAILILIN",
+        "SERPO BATURAJA",
+        "SERPO BUKITASAM",
+        "SERPO MARTAPURA",
+        "SERPO PENDOPO",
+        "SERPO PRABUMULIH",
+        "ADMIN"
+      ]
+    }
   },
   { timestamps: true } // Menambahkan createdAt & updatedAt secara otomatis
 );
