@@ -1,12 +1,12 @@
 "use client"
+
 import { usePmLink } from "@/context/pmlink-context"
 import { useEffect, useState } from "react"
-// import { getDataPmLink } from "../../utils/api"
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -16,171 +16,144 @@ import {
 } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useRouter } from "next/navigation"
+// import PMLinkForm from "@/app/dashboard/form/pmlink/page"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import dynamic from "next/dynamic"
 
-export default function Tabelpmlink() {
+type PmLink = {
+  serpo: string
+  wilayah: string
+  segment: string
+  tanggalpm: string
+  traveltiket: number
+  jarak: number
+}
+
+const PMLinkFormClient = dynamic(() => import("../app/dashboard/form/pmlink/PMLinkFormClient"), {
+  ssr: false,
+  loading: () => <p>Loading form...</p>,
+})
+
+
+export default function TabelPmLink() {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
-  // const [data, setData] = useState<pmLink[]>([])
-  // const [loading, setLoading] = useState(true)
-  const [role, setRole] = useState<string | null>("");
-  const [wilayahFilter, setWilayahFilter] = useState<string | null>(null);
-  const [serpoFilter, setSerpoFilter] = useState<string | null>(null);
-  const {dataPmLink , loading} = usePmLink();
+  const [role, setRole] = useState<string | null>("")
+  const [wilayahFilter, setWilayahFilter] = useState<string | null>(null)
+  const [serpoFilter, setSerpoFilter] = useState<string | null>(null)
+  const [personel, setPersonel] = useState<string | null>("")
+  const [selectedRowData, setSelectedRowData] = useState<PmLink | null>(null)
+  const { dataPmLink, loading } = usePmLink()
 
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
-    const storedRole = localStorage.getItem('role');
+    const storedRole = localStorage.getItem("role")
+    const storedPersonel = localStorage.getItem("personel")
     if (storedRole) {
-      setRole(JSON.parse(storedRole));
+      setRole(JSON.parse(storedRole))
+      setPersonel(JSON.parse(storedPersonel))
     } else {
-      router.push('/');
+      router.push("/")
     }
-  }, [router]);
-
-  
-// Di atas komponen
-type PmLink = {
-  serpo: string;
-  wilayah: string;
-  segment: string;
-  tanggalpm: string;
-  traveltiket: number;
-  jarak: number;
-};
-
-const isPmLink = (data: any): data is PmLink => {
-  return (
-    typeof data === 'object' &&
-    'serpo' in data &&
-    'wilayah' in data &&
-    'segment' in data &&
-    'tanggalpm' in data &&
-    'traveltiket' in data &&
-    'jarak' in data
-  );
-};
+  }, [router])
 
   const getStruktur = (role: string | null): ColumnDef<PmLink>[] => {
-    // if (!dataPmLink || dataPmLink.length === 0){
-    //   console.warn("data kosong - struktur kolom mungkin tidak sesuai");
-    // }
     const struktur: ColumnDef<PmLink>[] = [
-        {
-            id: "select",
-            header:({table}) =>(
-              <Checkbox
-                checked = { table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-                onCheckedChange={(value:boolean) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"/>
-            ),
-            cell: ({row}) => (
-              <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"/>
-            ),
-            enableSorting: false,
-            enableHiding: false,
-        },
-        {
-            accessorKey: "segment",
-            header: "Segment",
-            cell: ({row}) => (
-                <div className="capitalize whitespace-nowrap">{row.getValue("segment")}</div>
-            )
-        },
-        {
-          accessorKey: "tanggalpm",
-          header: "Tanggal PM",
-          cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("tanggalpm")}</div>
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "serpo",
+        header: "Serpo",
+        cell: ({ row }) => <div className="capitalize">{row.getValue("serpo")}</div>,
+      },
+      {
+        accessorKey: "segment",
+        header: "Segment",
+        cell: ({ row }) => <div className="capitalize">{row.getValue("segment")}</div>,
+      },
+      {
+        accessorKey: "tanggalpm",
+        header: "Tanggal PM",
+        cell: ({ row }) => <div className="capitalize">{row.getValue("tanggalpm")}</div>,
+      },
+      {
+        accessorKey: "traveltiket",
+        header: "TT",
+        cell: ({ row }) => <div className="capitalize">{row.getValue<number>("traveltiket")}</div>,
+      },
+      {
+        accessorKey: "jarak",
+        header: "Jarak",
+        cell: ({ row }) => <div className="capitalize">{row.getValue<number>("jarak")} km</div>,
+      },
+      {
+        header: 'Edit',
+        cell: ({ row }) => {
+          const rowData = row.original
+          return (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button 
+                  variant="outline"
+                  onClick={() => setSelectedRowData(rowData)}
+                >
+                  Edit
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[1000px] h-full overflow-auto">
+                <DialogHeader>
+                  <DialogTitle>Edit PM Link</DialogTitle>
+                  <DialogDescription>Isi form berikut untuk mengedit PM Link.</DialogDescription>
+                </DialogHeader>
+                <PMLinkFormClient initialData={selectedRowData} />
+              </DialogContent>
+            </Dialog>
           )
-        },
-        {
-            accessorKey: 'traveltiket',
-            header: 'TT',
-            cell: ({row}) => (
-                <div className="capitalize">{row.getValue<number>('traveltiket')}</div>
-            )
-        },
-        {
-            accessorKey: 'jarak',
-            header: 'Jarak',
-            cell: ({row}) => (
-                <div className="capitalize text-nowrap">{row.getValue<number>('jarak')} km</div>
-            )
-        },
-        // {
-        //     id: "actions",
-        //     enableHiding: false,
-        //     cell: ({ row }) => {
-        //       const status = row.getValue('traveltiket');
-        
-        //       return (
-        //         <DropdownMenu>
-        //           <DropdownMenuTrigger asChild>
-        //             <Button variant="ghost" className="h-8 w-8 p-0">
-        //               <span className="sr-only">Open menu</span>
-        //               <MoreHorizontal />
-        //             </Button>
-        //           </DropdownMenuTrigger>
-        //           <DropdownMenuContent align="end">
-        //             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        //             {
-        //                 status === "Belum" || status === "Gagal" ? (
-        //                     <DropdownMenuItem 
-        //                         onClick={() => router.push("/laporan")}
-        //                     >
-        //                         Tambahkan Laporan
-        //                     </DropdownMenuItem>
-        //                 ) : <DropdownMenuItem></DropdownMenuItem>
-        //             }
-        //           </DropdownMenuContent>
-        //         </DropdownMenu>
-        //       )
-        //     },
-        // },
-    ];
+        }
+      }
+    ]
 
-    if (role !== 'serpo'){
-        struktur.splice(1,0,{
-            accessorKey: 'serpo',
-            header: 'Serpo',
-            cell: ({row}) => (
-                <div className="capitalize whitespace-nowrap">{row.getValue('serpo')}</div>
-            )
-        })
-
-        struktur.splice(2,0, {
-            accessorKey: 'wilayah',
-            header: 'Wilayah',
-            cell: ({row}) => (
-                <div className="capitalize">{row.getValue('wilayah')}</div>
-            )
-        })
+    if (role !== "serpo") {
+      struktur.splice(2, 0, {
+        accessorKey: "wilayah",
+        header: "Wilayah",
+        cell: ({ row }) => <div className="capitalize">{row.getValue("wilayah")}</div>,
+      })
     }
-    return struktur;
+    return struktur
   }
-  const struktur = getStruktur(role);
-  
+
+  const struktur = getStruktur(role)
 
   const table = useReactTable({
     data: dataPmLink,
@@ -201,27 +174,28 @@ const isPmLink = (data: any): data is PmLink => {
     },
     initialState: {
       pagination: {
-        pageSize: 10 //mengatur berapa baris yang di show oleh data
-      }
-    }
+        pageSize: 10,
+      },
+    },
   })
 
   useEffect(() => {
-    const filters: ColumnFiltersState = [];
-
+    const filters: ColumnFiltersState = []
+    if (role === "serpo" && personel) {
+      filters.push({ id: "serpo", value: personel })
+    }
     if (wilayahFilter) {
-        filters.push({ id: "wilayah", value: wilayahFilter });
+      filters.push({ id: "wilayah", value: wilayahFilter })
     }
     if (serpoFilter) {
-        filters.push({ id: "serpo", value: serpoFilter });
+      filters.push({ id: "serpo", value: serpoFilter })
     }
-
-    table.setColumnFilters(filters);
-}, [wilayahFilter, serpoFilter, table]);
+    table.setColumnFilters(filters)
+  }, [wilayahFilter, serpoFilter, personel, role, table])
 
   if (loading) {
     return (
-      <div className="w-full p-2 col-span-2">
+      <div className="w-full p-2">
         <div className="rounded-md border p-4">
           <div className="animate-pulse flex space-x-4">
             <div className="flex-1 space-y-4 py-1">
@@ -234,22 +208,19 @@ const isPmLink = (data: any): data is PmLink => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="w-full p-2 col-span-2">
+    <div className="w-full p-2">
       <div className="rounded-md border">
-        <h1 className="text-center uppercase font-bold mt-2">tabel pm link</h1>
-        <div className="flex space-x-4 mb-4 ml-4">
-          {
-            role !== 'serpo' ? (
-              <div>
-                <DropdownMenu>
+        <h1 className="text-center uppercase font-bold mt-2">Tabel PM Link</h1>
+        <div className="flex flex-wrap gap-2 mb-4 p-4">
+          {role !== "serpo" && (
+            <>
+              <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    {wilayahFilter ? `Wilayah: ${wilayahFilter}` : "Filter Wilayah"}
-                  </Button>
+                  <Button variant="outline">{wilayahFilter ? `Wilayah: ${wilayahFilter}` : "Filter Wilayah"}</Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem onClick={() => setWilayahFilter(null)}>Semua</DropdownMenuItem>
@@ -262,9 +233,7 @@ const isPmLink = (data: any): data is PmLink => {
               </DropdownMenu>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    {serpoFilter ? `Serpo: ${serpoFilter}` : "Filter Serpo"}
-                  </Button>
+                  <Button variant="outline">{serpoFilter ? `Serpo: ${serpoFilter}` : "Filter Serpo"}</Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem onClick={() => setSerpoFilter(null)}>Semua</DropdownMenuItem>
@@ -275,67 +244,61 @@ const isPmLink = (data: any): data is PmLink => {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-              </div>
-             ) : ""
-            }
-        </div>        
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+            </>
+          )}
+        </div>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id} className="text-center">
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => {
-                // console.log("data per row: ", row.original);
-                return(
-                  <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
                   ))}
                 </TableRow>
-                )
-              })
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={struktur.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={struktur.length} className="h-24 text-center">
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </div>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-4 py-4">
+        <div className="text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
+          selected.
+        </div>
+        {role === "serpo" && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">Tambahkan +</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[1000px] h-full overflow-auto">
+              <DialogHeader>
+                <DialogTitle>Tambah PM Link</DialogTitle>
+                <DialogDescription>Isi form berikut untuk menambahkan PM Link baru.</DialogDescription>
+              </DialogHeader>
+              <PMLinkFormClient />
+            </DialogContent>
+          </Dialog>
+        )}
         <div className="space-x-2">
           <Button
             variant="outline"
@@ -345,12 +308,7 @@ const isPmLink = (data: any): data is PmLink => {
           >
             Previous
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
+          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
             Next
           </Button>
         </div>

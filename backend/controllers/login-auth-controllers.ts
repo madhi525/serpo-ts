@@ -40,7 +40,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     }
 
     // Buat JWT Token
-    const token = jwt.sign({ id: user._id, role: user.role }, secret, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, role: user.role, personel: user.personel }, secret, { expiresIn: '1h' });
 
     // Set token di HttpOnly Cookie
     res.cookie('token', token, {
@@ -50,7 +50,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
       maxAge: 3600000, // 1 jam
     });
 
-    res.status(200).json({ message: 'Login successful', role: user.role });
+    res.status(200).json({ message: 'Login successful', role: user.role, personel: user.personel });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

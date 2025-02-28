@@ -16,6 +16,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+// import { SessionProvider } from "next-auth/react";
 
 import { useState } from "react"
 
@@ -30,7 +31,7 @@ import { useState } from "react"
 // });
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
   const [activeItem, setActiveItem] = useState<string | "Home">("Home");
-  const handleItemChange = (item:string | null) =>{
+  const handleItemChange = (item:string) =>{
     setActiveItem(item);
     console.log("Active item in parent:", item);
   }
@@ -38,7 +39,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
         <SidebarProvider>
           <AppSidebar onActiveItemChange={handleItemChange}/>
           <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 justify-between sticky top-0 w-full z-10 bg-white">
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 justify-between sticky top-0 w-full z-10 bg-inherit">
             <div className="flex flex-row items-center gap-2">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
