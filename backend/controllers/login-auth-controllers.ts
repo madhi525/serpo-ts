@@ -30,11 +30,13 @@ export const login = async (req: Request, res: Response): Promise<any> => {
   const { username, password } = req.body;
 
     const user = await User.findOne({ username });
+    console.log(user);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log(isMatch);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -69,7 +71,7 @@ export const register = async (req: Request, res: Response): Promise<any> => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { username, password, role } = req.body;
+  const { username, password, role, personel } = req.body;
 
   try {
     const existingUser = await User.findOne({ username });
@@ -78,7 +80,7 @@ export const register = async (req: Request, res: Response): Promise<any> => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, password: hashedPassword, role });
+    const newUser = new User({ username, password: hashedPassword, role, personel });
     await newUser.save();
 
     res.status(201).json({ message: 'User registered successfully' });
@@ -100,6 +102,25 @@ export const validateRegister = [
   body('username').isString().trim().escape(),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
   body('role').isIn(['admin', 'serpo']).withMessage('Invalid role'),
+  body('personel').isIn([
+    "SERPO ARGAMAKMUR",
+        "SERPO MANNA",
+        "SERPO MUKO",
+        "SERPO PEKALONGAN",
+        "SERPO SUKAMERINDU",
+        "SERPO DEMANG",
+        "SERPO JAKABARING",
+        "SERPO MASKAREBET",
+        "SERPO PALEMBANGKOTA",
+        "SERPO PALEMBANGULU",
+        "SERPO SUNGAILILIN",
+        "SERPO BATURAJA",
+        "SERPO BUKITASAM",
+        "SERPO MARTAPURA",
+        "SERPO PENDOPO",
+        "SERPO PRABUMULIH",
+        "ADMIN"
+  ]).withMessage('invalid Personel')
 ];
 
 /**

@@ -58,6 +58,7 @@ export function AppSidebar({ onActiveItemChange, ...props }: { onActiveItemChang
     const handleActivity = () => {
       clearTimeout(timer)
       timer = setTimeout(() => {
+        alert('Tidak ada aktifitas selama 30 Menit');
         handleLogout() // Call handleLogout after 30 minutes of inactivity
       }, 1800000) // 30 minutes in milliseconds
     }

@@ -10,8 +10,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CalendarIcon } from "lucide-react"
-import { parse, format } from "date-fns"
-import { id } from "date-fns/locale"
+import { parse } from "date-fns"
 import { cn } from "@/lib/utils"
 import "leaflet/dist/leaflet.css"
 import Image from "next/image"
@@ -43,8 +42,29 @@ interface FormData {
   segment: string
   traveltiket: number
   tanggalpm?: Date
-  tikorawal: LatLngTuple
-  tikorakhir: LatLngTuple
+  tikorawal: [number, number]
+  tikorakhir: [number, number]
+  fototikorawal: File | null
+  fototikorakhir: File | null
+  fotoproses: File[]
+  wilayah: string
+  rute: LatLngTuple[]
+  jarak: number
+}
+
+interface initialData {
+  serpo: string
+  segment: string
+  traveltiket: number
+  tanggalpm?: Date
+  tikorawal: {
+    lat: number,
+    lon: number
+  }
+  tikorakhir: {
+    lat: number,
+    lon: number
+  }
   fototikorawal: File | null
   fototikorakhir: File | null
   fotoproses: File[]
@@ -54,14 +74,14 @@ interface FormData {
 }
 
 interface PMLinkFormProps {
-  initialData?: FormData
+  initialData?: initialData
   onSubmit?: (data: FormData) => void
   onCancel?: () => void
 }
 
 export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFormProps) {
   const [formData, setFormData] = useState<FormData>(
-    initialData || {
+    {
       serpo: "",
       segment: "",
       traveltiket: 0,
@@ -85,17 +105,45 @@ export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFo
 
 
   useEffect(() => {
+    const handleFileOrBlob = (value: any) => {
+      // If it's a valid File or Blob, process it accordingly
+      if (value instanceof Blob || value instanceof File) {
+        return URL.createObjectURL(value); // Convert the Blob/File to a URL
+      }
+      
+      // If it's already a valid URL (string), return it directly
+      if (isValidUrl(value)) {
+        return value; // Return the URL directly
+      }
+    
+      // If the value is neither a valid File/Blob nor a valid URL, return undefined
+      return undefined;
+    };
+
     if (initialData) {
+      console.log(initialData)
       const formattedInitialData = {
         ...initialData,
+        tikorawal: [initialData.tikorawal.lat, initialData.tikorakhir.lon],
+        tikorakhir: [initialData.tikorakhir.lat, initialData.tikorakhir.lon],
         tanggalpm: initialData.tanggalpm ? parse(initialData.tanggalpm.toString(), "dd/MM/yyyy", new Date()) : new Date(),
       }
       setFormData(formattedInitialData)
       // Set preview images if available in initialData
       setPreviewImages({
-        fototikorawal: initialData.fototikorawal ? URL.createObjectURL(initialData.fototikorawal) : undefined,
-        fototikorakhir: initialData.fototikorakhir ? URL.createObjectURL(initialData.fototikorakhir) : undefined,
-        fotoproses: initialData.fotoproses.map((file) => URL.createObjectURL(file)),
+        fototikorawal: initialData.fototikorawal
+          ? handleFileOrBlob(initialData.fototikorawal)
+          : undefined,
+          
+        fototikorakhir: initialData.fototikorakhir
+          ? handleFileOrBlob(initialData.fototikorakhir)
+          : undefined,
+          
+        fotoproses: initialData.fotoproses && Array.isArray(initialData.fotoproses)
+          ? initialData.fotoproses.map((file) =>
+              handleFileOrBlob(file)
+            )
+          : [],
       })
     }
   }, [initialData])
@@ -105,6 +153,17 @@ export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFo
       setFormData((prev) => ({ ...prev, tanggalpm: date }))
     }
   }
+
+  const isValidUrl = (value: any): boolean => {
+    try {
+      // Check if the value is a valid URL by attempting to create a URL object
+      new URL(value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+  
 
   const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -164,8 +223,11 @@ export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFo
   )
 
   const fetchRoute = useCallback(async () => {
-    const [lat1, lon1] = formData.tikorawal
-    const [lat2, lon2] = formData.tikorakhir
+    const [lat1, lon1] = formData.tikorawal;  // Destructure as LatLngTuple
+    const [lat2, lon2] = formData.tikorakhir; // Destructure as LatLngTuple
+
+    console.log('lat1, lon1:', lat1, lon1);
+    console.log('lat2, lon2:', lat2, lon2);
 
     try {
       const response = await fetch(
@@ -306,7 +368,7 @@ export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFo
           {/* Map */}
           <div className="h-64 bg-gray-100 rounded-md overflow-hidden transition-all duration-200">
             <Map
-              center={[-2.960972050283343, 104.73774902999797]}
+              center={formData.tikorawal[0] !== 0 ? formData.tikorawal : [-2.960972050283343, 104.73774902999797]}
               zoom={13}
               markers={[
                 formData.tikorawal[0] !== 0 ? formData.tikorawal : undefined,
