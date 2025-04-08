@@ -42,8 +42,14 @@ interface FormData {
   segment: string
   traveltiket: number
   tanggalpm?: Date
-  tikorawal: [number, number]
-  tikorakhir: [number, number]
+  tikorawal: {
+    lat: number,
+    lon: number
+  }
+  tikorakhir: {
+    lat: number,
+    lon: number
+  }
   fototikorawal: File | null
   fototikorakhir: File | null
   fotoproses: File[]
@@ -86,8 +92,8 @@ export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFo
       segment: "",
       traveltiket: 0,
       tanggalpm: undefined,
-      tikorawal: [0, 0],
-      tikorakhir: [0, 0],
+      tikorawal: {lat:0,lon:0},
+      tikorakhir: {lat:0,lon:0},
       fototikorawal: null,
       fototikorakhir: null,
       fotoproses: [],
@@ -105,9 +111,9 @@ export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFo
 
 
   useEffect(() => {
-    const handleFileOrBlob = (value: any) => {
+    const handleFileOrBlob = (value:any) => {
       // If it's a valid File or Blob, process it accordingly
-      if (value instanceof Blob || value instanceof File) {
+      if (value instanceof File) {
         return URL.createObjectURL(value); // Convert the Blob/File to a URL
       }
       
@@ -124,8 +130,6 @@ export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFo
       console.log(initialData)
       const formattedInitialData = {
         ...initialData,
-        tikorawal: [initialData.tikorawal.lat, initialData.tikorakhir.lon],
-        tikorakhir: [initialData.tikorakhir.lat, initialData.tikorakhir.lon],
         tanggalpm: initialData.tanggalpm ? parse(initialData.tanggalpm.toString(), "dd/MM/yyyy", new Date()) : new Date(),
       }
       setFormData(formattedInitialData)
@@ -154,12 +158,13 @@ export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFo
     }
   }
 
-  const isValidUrl = (value: any): boolean => {
+  const isValidUrl = (value: string): boolean => {
     try {
       // Check if the value is a valid URL by attempting to create a URL object
       new URL(value);
       return true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   };
@@ -223,8 +228,10 @@ export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFo
   )
 
   const fetchRoute = useCallback(async () => {
-    const [lat1, lon1] = formData.tikorawal;  // Destructure as LatLngTuple
-    const [lat2, lon2] = formData.tikorakhir; // Destructure as LatLngTuple
+    const lat1 = formData.tikorawal.lat;  // Destructure as LatLngTuple
+    const lon1 = formData.tikorawal.lon;
+    const lat2 = formData.tikorakhir.lat;  // Destructure as LatLngTuple
+    const lon2 = formData.tikorakhir.lon;
 
     console.log('lat1, lon1:', lat1, lon1);
     console.log('lat2, lon2:', lat2, lon2);
@@ -249,7 +256,7 @@ export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFo
   }, [formData.tikorawal, formData.tikorakhir])
 
   useEffect(() => {
-    if (formData.tikorawal[0] !== 0 && formData.tikorakhir[0] !== 0) {
+    if (formData.tikorawal.lat !== 0 && formData.tikorakhir.lat !== 0) {
       fetchRoute()
     }
   }, [formData.tikorawal, formData.tikorakhir, fetchRoute])
@@ -368,11 +375,11 @@ export default function PMLinkForm({ initialData, onSubmit, onCancel }: PMLinkFo
           {/* Map */}
           <div className="h-64 bg-gray-100 rounded-md overflow-hidden transition-all duration-200">
             <Map
-              center={formData.tikorawal[0] !== 0 ? formData.tikorawal : [-2.960972050283343, 104.73774902999797]}
+              center={formData.tikorawal.lat !== 0 ? [formData.tikorawal.lat, formData.tikorawal.lon] : [-2.960972050283343, 104.73774902999797]}
               zoom={13}
               markers={[
-                formData.tikorawal[0] !== 0 ? formData.tikorawal : undefined,
-                formData.tikorakhir[0] !== 0 ? formData.tikorakhir : undefined,
+                formData.tikorawal.lat !== 0 ? [formData.tikorawal.lat, formData.tikorawal.lon] : undefined,
+                formData.tikorakhir.lat !== 0 ? [formData.tikorakhir.lat, formData.tikorakhir.lon] : undefined,
               ].filter((marker): marker is LatLngTuple => marker !== undefined)}
               polyline={formData.rute}
               onLocationSelect={handleMapClick}

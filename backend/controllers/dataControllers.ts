@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import PmLink from '../models/pm';
+import boqModel from '../models/boq';
 
 // Create New PM Link
 export const createPmLink = async (req: Request, res: Response) => {
@@ -169,3 +170,137 @@ export const deletePmLink = async (req: Request, res: Response) => {
     });
   }
 };
+
+class boq_controller {
+  async get_all_boq(res: Response){
+    try{
+      const boq_data = await boqModel.find()
+      res.status(200).json({
+        status: 'success',
+        data: boq_data
+      })
+    } catch (e) {
+      res.status(500).json({
+        status: 'fail',
+        message: 'gagal memuat data'
+      })
+    }
+  }
+
+  async get_boq_by_id(req: Request, res: Response){
+    try{
+      const id = req.params.id
+      const boq_data = await boqModel.findById(id)
+      if(!boq_data){
+        return res.status(404).json({
+          status: 'fail',
+          message: 'data tidak ditemukan'
+        })
+      } else {
+        res.status(200).json({
+          status: 'success',
+          data: boq_data
+        })
+      }
+    } catch (e){
+      res.status(500).json({
+        status: 'fail',
+        message: 'gagal memuat data'
+      })
+    }
+  }
+
+  async create_boq (req: Request, res: Response){
+    try{
+      const boq_data = req.body
+      const new_boq = new boqModel(boq_data)
+      await new_boq.save()
+      res.status(201).json({
+        status: 'success',
+        data: new_boq
+      })
+    } catch (e){
+      res.status(500).json({
+        status: 'fail',
+        message: 'gagal membuat data'
+      })
+    }
+  }
+
+  async get_boq_by_serpo (req: Request, res: Response){
+    if (req.method === 'GET'){
+      try{
+        const {serpo} = req.query
+        if (!serpo){
+          return res.status(400).json({
+            status: 'fail',
+            message: 'serpo tidak boleh kosong'
+          })
+        }
+        const boq_data = await boqModel.find({serpo})
+        if(!boq_data){
+          return res.status(404).json({
+            status: 'fail',
+            message: 'data tidak ditemukan'
+          })
+        } else {
+          res.status(200).json({
+            status: 'success',
+            data: boq_data
+          })
+        }
+      } catch (e){
+        console.error("Error mengambil data : " + e);
+        res.status(500).json({
+          status: 'fail',
+          message: 'gagal membuat data'
+        })
+      }
+    }
+  }
+
+  async update_revisi_boq(req: Request, res: Response){
+    if (req.method !== 'PUT'){
+      res.status(405).json({
+        status: 'fail',
+        message: 'method tidak diperbolehkan'
+      })
+    }
+    try{
+      const { id_boq } = req.params;
+      const { item_key, item_path, item_status, item_qty} = req.body;
+      if(!id_boq || !item_key){
+        res.status(400).json({
+          status: 'fail',
+          message: 'item_key tidak boleh kosong'
+        })
+      }
+      const update_boq = await boqModel.findByIdAndUpdate(id_boq,
+        {
+          $set: {
+          [`data.${item_key}.path`]: item_path,
+          [`data.${item_key}.status`]: item_status,
+          [`data.${item_key}.qty`]: item_qty
+          },
+        },
+        {new: true}
+      );
+      if(!update_boq){
+        return res.status(404).json({
+          status: 'fail',
+          message: 'data tidak ditemukan'
+        })
+      }
+      res.status(200).json({
+        status: 'success',
+        data: update_boq
+      })
+    } catch (e) {
+      console.error("Error mengambil data : " + e);
+      res.status(500).json({
+        status: 'fail',
+        message: 'gagal membuat data'
+      })
+    }
+  }
+}
